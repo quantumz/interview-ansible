@@ -1,0 +1,41 @@
+---
+- name: Application Deploy
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+  - name: Copy application to app folder
+    copy:
+        src: "artifact/helloworld.zip"
+        dest: "{{ app_root }}/helloworld.zip"
+        mode: 0755
+        owner: "{{ app_owner }}"
+
+  - name: Unzip application in app folder
+    unarchive:
+        src: "{{ app_root }}/helloworld.zip"
+        dest: "{{ app_root }}"
+        mode: 0775
+
+  - name: Render helloworld.ini config file
+    template:
+      src: /{{ app_root }}/helloworld.ini.j2
+      dest: /{{ app_root }}/helloworld.ini
+
+  - name: Render systemd configuration to app server
+    template:
+        src: "/{{ app_root }}/helloworld.service.j2"
+        dest: /etc/systemd/system/helloworld.service
+    become: true
+
+  - name: Restart application
+    service:
+      name: helloworld
+      state: restart
+    become: true
+
+  - name: Check health of application
+    uri:
+      url: http://{{ inventory_hostname }}:9000
+      status_code: 200

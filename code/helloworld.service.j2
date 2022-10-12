@@ -1,0 +1,12 @@
+[Unit]
+Description=uWSGI instance to serve helloworld
+After=network.target
+
+[Service]
+User={{ app_owner }}
+Group={{ app_owner }}
+WorkingDirectory=/opt/helloworld
+ExecStart=/usr/bin/uwsgi --ini helloworld.ini
+
+[Install]
+WantedBy=multi-user.target

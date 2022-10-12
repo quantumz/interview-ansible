@@ -1,0 +1,19 @@
+[Unit]
+Description=Consul Agent
+Requires=network-online.target
+After=network.target
+
+[Service]
+Type=simple
+User=tasker
+Group=tasker
+WorkingDirectory=/opt/consul
+ExecStart=/opt/consul/consul agent -dev -config-dir=/opt/consul/config
+ExecReload=/bin/kill -SIGHUP $MAINPID
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,11 @@
+{
+    "services": [{
+        "id": "{{ app_name }}",
+        "name": "{{ app_name }}",
+        "checks": [{
+            "http": "http://127.0.0.1:{{ healthcheck_port }}/{{ healthcheck_uri }}",
+            "interval": "5s",
+            "timeout": "4s"
+        }]
+    }]
+}
